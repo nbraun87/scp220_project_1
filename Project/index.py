@@ -1,6 +1,7 @@
 from os import system, name, urandom
 from time import sleep as sl
 from Car import Car
+import json
 
 def pause():
     input("Press Enter key to continue...")
@@ -75,9 +76,6 @@ def editVehicle():
     else:
         print("Vehicle Not Found!\nReturning to Main Menu")
         sl(3)
-        
-    
-
 
 def deleteVehicle():
     clearScreen()
@@ -109,26 +107,60 @@ def displayInventory(op = 0):
     if op == 0:
         for car in vehicleInventory:
             print(car.display())
-        input("Press Enter to return to main")
+        input("Press Enter to return to main...")
     else:
         for car in vehicleInventory:
             print(car.display())
 
+def saveInventory():
+    global vehicleInventory
+    with open('data.dat', 'w') as fo:
+        for car in vehicleInventory:
+            if car.archive:
+                fo.write(json.dumps(vehicleInventory))
+                _ = input("Vehicle inventory saved.")
+                break
+        # for car in vehicleInventory:
+        #     fo.write(json.dumps(car.__dict__))
+        #     fo.write('\n')
+
+def exportInventory():
+    pass
+
+def loadInventory():
+    global vehicleInventory
+    ch = input("Which data file to load? [data.dat]")
+    if ch == "":
+        ch = "data.dat"
+    with open(ch, 'r') as fi:
+        vehicleInventory = json.loads(fi)
+        # for line in fi:
+        #     readObject = json.loads(line)
+        #     PersonObject = Person(readObject["fname"], readObject["lname"], readObject["data"])
+        #     newListJson.append(PersonObject)
+
 def print_menu():
     clearScreen()
     print("++++++++++ Welcome to Car Inventory Manager {:.1f} ++++++++++\n".format(appVersion))
+
+    #TODO: Set color of option 5 to "Dark color" if archive is not needed. 
+    # Question!?: checking vehInv list or global archive flag?
+            
     print("\nSelect from the following: \n " \
         "\t1. Add Vehicle\n" \
         "\t2. Edit Vehicle\n" \
         "\t3. Delete Vehicle\n" \
         "\t4. Show Inventory\n" \
+        "\t5. Export Inventory To File\n" \
+        "\t6. Load Inventory From File\n" \
         "\t9. Exit")
 
 
-appVersion = 1.0
+appVersion = 1.5
 appStartUp = True
 vehicleInventory = []
 vehicleInventory.append(Car("Volks", "Jetta", 123, 17000, 12000, ["AC", "Power Windows"]))
+arch = False
 
 def main():
     usrInput = '0'
@@ -154,6 +186,12 @@ def main():
         elif usrInput == '4':
             displayInventory()
             prompt = 'Please enter your choice: '
+
+        elif usrInput == '5':
+            saveInventory()
+
+        elif usrInput == '6':
+            loadInventory()
 
         elif usrInput == '9':
             clearScreen()

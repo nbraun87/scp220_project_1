@@ -9,6 +9,7 @@ class Car:
         self.mileage = mileage
         self.price = price
         self.features = features
+        self.archive = False
         Car.count += 1
 
     def __del__(self):
